@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>СтройМастер — строительные и отделочные материалы</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        color: #333;
+        background: #f4f4f4;
+        line-height: 1.6;
+    }
+
+    /* ---------- ШАПКА ---------- */
+    header {
+        background: #2c3e50;
+        color: #fff;
+        padding: 12px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 15px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 8px rgba(0,0,0,.2);
+    }
+
+    /* Левая часть шапки: фото особняка + логотип */
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        cursor: pointer;
+    }
+    .brand-photo {
+        width: 90px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 2px solid #f39c12;
+        box-shadow: 0 2px 6px rgba(0,0,0,.35);
+        flex-shrink: 0;
+    }
+    .logo { font-size: 26px; font-weight: bold; letter-spacing: 1px; }
+    .logo span { color: #f39c12; }
+
+    nav ul { list-style: none; display: flex; gap: 20px; flex-wrap: wrap; }
+    nav a {
+        color: #ecf0f1;
+        text-decoration: none;
+        padding: 6px 10px;
+        border-radius: 4px;
+        transition: background .3s;
+        cursor: pointer;
+    }
+    nav a:hover, nav a.active { background: #f39c12; color: #2c3e50; }
+
+    /* ---------- СТРАНИЦЫ ---------- */
+    .page { display: none; }
+    .page.active { display: block; animation: fade .3s; }
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+    /* ---------- ИНТРО-БЛОК ---------- */
+    .intro {
+        display: flex;
+        gap: 30px;
+        padding: 40px;
+        background: linear-gradient(135deg, #34495e, #2c3e50);
+        color: #fff;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    .intro-text { flex: 1 1 300px; }
+    .intro-text h1 { font-size: 34px; margin-bottom: 12px; }
+    .intro-text p { font-size: 17px; opacity: .9; }
+    .slider {
+        flex: 1 1 300px;
+        height: 200px;
+        background: #7f8c8d;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: #ddd;
+    }
+
+    /* ---------- КОНТЕНТ ---------- */
+    main { padding: 40px; max-width: 1200px; margin: 0 auto; }
+    h2 { margin-bottom: 20px; color: #2c3e50; border-left: 5px solid #f39c12; padding-left: 12px; }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; }
+    .card {
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,.08);
+        transition: transform .2s;
+    }
+    .card:hover { transform: translateY(-5px); }
+    .card .photo {
+        width: 100%;
+        height: 190px;
+        object-fit: cover;
+        display: block;
+        background: #ddd;
+    }
+    .card-body { padding: 15px; }
+    .card-body h3 { margin-bottom: 8px; color: #2c3e50; }
+    .card-body p { font-size: 14px; color: #555; }
+
+    /* ---------- ТАБЛИЦЫ ---------- */
+    table { width: 100%; border-collapse: collapse; background: #fff; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 10px 14px; text-align: left; }
+    th { background: #2c3e50; color: #fff; }
+    tr:nth-child(even) { background: #f9f9f9; }
+    .price { text-align: right; font-weight: bold; }
+    .promo { background: #fdebd0 !important; font-style: italic; }
+    .hit   { background: #d5f5e3 !important; }
+    .sale  { background: #fadbd8 !important; }
+
+    /* ---------- КОНТАКТЫ ---------- */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+    @media (max-width: 700px) {
+        .contact-grid { grid-template-columns: 1fr; }
+        header { padding: 12px 20px; }
+        main { padding: 25px 20px; }
+    }
+    input, textarea {
+        width: 100%; padding: 10px; margin-bottom: 12px;
+        border: 1px solid #ccc; border-radius: 4px; font-family: inherit;
+    }
+    button {
+        background: #f39c12; color: #fff; border: none;
+        padding: 10px 24px; border-radius: 4px; cursor: pointer; font-size: 16px;
+    }
+    button:hover { background: #e67e22; }
+
+    /* ---------- ПОДВАЛ ---------- */
+    footer {
+        background: #2c3e50;
+        color: #bdc3c7;
+        padding: 20px 40px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        font-size: 14px;
+        margin-top: 40px;
+    }
+    footer a { color: #ecf0f1; text-decoration: none; margin-right: 15px; cursor: pointer; }
+    footer a:hover { color: #f39c12; }
+</style>
+</head>
+<body>
+
+<!-- ================= ШАПКА ================= -->
+<header>
+    <div class="brand" onclick="showPage('main')">
+        <!-- Фото особняка Эпштейна -->
+        <img class="brand-photo" alt="Особняк Эпштейна" src="data:image/svg+xml;utf8,
+<svg xmlns='http://www.w3.org/2000/svg' width='180' height='120' viewBox='0 0 180 120'>
+  <defs>
+    <linearGradient id='sky' x1='0' y1='0' x2='0' y2='1'>
+      <stop offset='0%' stop-color='%23a9cce3'/>
+      <stop offset='100%' stop-color='%23e8f1f8'/>
+    </linearGradient>
+    <linearGradient id='wall' x1='0' y1='0' x2='0' y2='1'>
+      <stop offset='0%' stop-color='%23f5e6c8'/>
+      <stop offset='100%' stop-color='%23d9c39a'/>
+    </linearGradient>
+  </defs>
+  <rect width='180' height='120' fill='url(%23sky)'/>
+  <rect y='95' width='180' height='25' fill='%237a8a5a'/>
+  <!-- корпус -->
+  <rect x='35' y='45' width='110' height='55' fill='url(%23wall)' stroke='%23a08a5c' stroke-width='1.5'/>
+  <!-- фронтон -->
+  <polygon points='35,45 90,15 145,45' fill='%23e2cfa5' stroke='%23a08a5c' stroke-width='1.5'/>
+  <circle cx='90' cy='32' r='5' fill='%23a08a5c'/>
+  <!-- колонны -->
+  <rect x='45' y='55' width='7' height='45' fill='%23faf2df' stroke='%23a08a5c'/>
+  <rect x='65' y='55' width='7' height='45' fill='%23faf2df' stroke='%23a08a5c'/>
+  <rect x='85' y='55' width='7' height='45' fill='%23faf2df' stroke='%23a08a5c'/>
+  <rect x='105' y='55' width='7' height='45' fill='%23faf2df' stroke='%23a08a5c'/>
+  <rect x='125' y='55' width='7' height='45' fill='%23faf2df' stroke='%23a08a5c'/>
+  <!-- дверь и окна -->
+  <rect x='83' y='75' width='17' height='25' fill='%235d4a2f'/>
+  <rect x='50' y='63' width='12' height='12' fill='%238fb6cc' stroke='%23a08a5c'/>
+  <rect x='112' y='63' width='12' height='12' fill='%238fb6cc' stroke='%23a08a5c'/>
+  <!-- крыша-балясина -->
+  <rect x='30' y='98' width='120' height='3' fill='%23a08a5c'/>
+</svg>">
+        <div class="logo">Строй<span>Мастер</span></div>
+    </div>
+    <nav>
+        <ul>
+            <li><a data-page="main" class="active">Главная</a></li>
+            <li><a data-page="about">О компании</a></li>
+            <li><a data-page="catalog">Каталог</a></li>
+            <li><a data-page="price">Прайс-лист</a></li>
+            <li><a data-page="contacts">Контакты</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- ================= ГЛАВНАЯ ================= -->
+<section id="main" class="page active">
+    <div class="intro">
+        <div class="intro-text">
+            <h1>Строим надёжно — отделываем красиво!</h1>
+            <p>Более 15 лет поставляем качественные строительные и отделочные материалы
+               для частных и коммерческих объектов. Гарантия, доставка,
+               профессиональная консультация.</p>
+        </div>
+        <div class="slider">Featured Project Slider</div>
+    </div>
+
+    <main>
+        <h2>Почему выбирают нас</h2>
+        <div class="cards">
+            <div class="card"><div class="card-body">
+                <h3>Широкий ассортимент</h3>
+                <p>Более 5000 наименований товаров в наличии на складе.</p>
+            </div></div>
+            <div class="card"><div class="card-body">
+                <h3>Доставка по городу</h3>
+                <p>Бесплатная доставка при заказе от 15 000 ₽.</p>
+            </div></div>
+            <div class="card"><div class="card-body">
+                <h3>Гарантия качества</h3>
+                <p>Только сертифицированная продукция от проверенных производителей.</p>
+            </div></div>
+        </div>
+
+        <h2 style="margin-top:40px;">Популярные товары</h2>
+        <div class="cards">
+            <div class="card">
+                <img class="photo" alt="Керамическая плитка" src="data:image/svg+xml;utf8,
+<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'>
+  <rect width='400' height='300' fill='%23e8e2d8'/>
+  <g stroke='%23b9b0a0' stroke-width='4'>
+    <rect x='20' y='20' width='110' height='110' fill='%23cdbfa9'/>
+    <rect x='145' y='20' width='110' height='110' fill='%23d9cdb8'/>
+    <rect x='270' y='20' width='110' height='110' fill='%23c5b79f'/>
+    <rect x='20' y='145' width='110' height='110' fill='%23d9cdb8'/>
+    <rect x='145' y='145' width='110' height='110' fill='%23bfae94'/>
+    <rect x='270' y='145' width='110' height='110' fill='%23cdbfa9'/>
+  </g>
+  <text x='200' y='295' font-family='Arial' font-size='14' fill='%23555' text-anchor='middle'>Керамическая плитка</text>
+</svg>">
+                <div class="card-body">
+                    <h3>Керамическая плитка</h3>
+                    <p>Износостойкая, для ванных комнат и кухонь.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img class="photo" alt="Ламинат" src="data:image/svg+xml;utf8,
+<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'>
+  <rect width='400' height='300' fill='%23a9774b'/>
+  <g stroke='%236b4a2a' stroke-width='2'>
+    <rect x='20' y='20' width='360' height='50' fill='%23b98055'/>
+    <rect x='20' y='70' width='360' height='50' fill='%23a9774b'/>
+    <rect x='20' y='120' width='360' height='50' fill='%23c68a5c'/>
+    <rect x='20' y='170' width='360' height='50' fill='%23a9774b'/>
+    <rect x='20' y='220' width='360' height='50' fill='%23b98055'/>
+  </g>
+  <g stroke='%2380532f' stroke-width='1' opacity='.5'>
+    <line x1='80' y1='20' x2='80' y2='270'/>
+    <line x1='210' y1='20' x2='210' y2='270'/>
+    <line x1='330' y1='20' x2='330' y2='270'/>
+  </g>
+  <text x='200' y='295' font-family='Arial' font-size='14' fill='%23fff' text-anchor='middle'>Ламинат «Дуб»</text>
+</svg>">
+                <div class="card-body">
+                    <h3>Ламинат 32 класс</h3>
+                    <p>Влагостойкий, подходит для жилых помещений.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img class="photo" alt="Интерьерная краска" src="data:image/svg+xml;utf8,
+<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'>
+  <rect width='400' height='300' fill='%23f2f2f2'/>
+  <ellipse cx='200' cy='270' rx='120' ry='18' fill='%23d0d0d0'/>
+  <rect x='140' y='100' width='120' height='170' rx='10' fill='%23e74c3c'/>
+  <rect x='150' y='90' width='100' height='20' fill='%23c0392b'/>
+  <rect x='150' y='80' width='100' height='15' fill='%237f8c8d'/>
+  <text x='200' y='200' font-family='Arial' font-size='22' fill='%23fff' text-anchor='middle'>ЭКО</text>
+  <text x='200' y='295' font-family='Arial' font-size='14' fill='%23555' text-anchor='middle'>Интерьерная краска</text>
+</svg>">
+                <div class="card-body">
+                    <h3>Интерьерная краска</h3>
+                    <p>Экологичная, без запаха, 100+ оттенков.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</section>
+
+<!-- ================= О КОМПАНИИ ================= -->
+<section id="about" class="page">
+    <main>
+        <h2>О компании «СтройМастер»</h2>
+        <p>Компания <strong>«СтройМастер»</strong> основана в 2009 году.
+           Мы занимаемся оптовой и розничной продажей строительных
+           и отделочных материалов.</p>
+
+        <h2 style="margin-top:30px;">Основные показатели деятельности</h2>
+        <table>
+            <tr><th>Показатель</th><th>Значение</th></tr>
+            <tr><td>Год основания</td><td>2009</td></tr>
+            <tr><td>Количество сотрудников</td><td>45 человек</td></tr>
+            <tr><td>Складская площадь</td><td>2 500 м²</td></tr>
+            <tr><td>Наименований товаров</td><td>более 5 000</td></tr>
+            <tr><td>Обслужено клиентов</td><td>более 12 000</td></tr>
+        </table>
+
+        <h2 style="margin-top:30px;">Контактная информация</h2>
+        <p>
+            Адрес: г. Москва, ул. Строителей, д. 15<br>
+            Телефон: +7 (495) 123-45-67<br>
+            E-mail: info@stroymaster.ru<br>
+            Режим работы: пн–сб, 9:00–20:00
+        </p>
+    </main>
+</section>
+
+<!-- ================= КАТАЛОГ ================= -->
+<section id="catalog" class="page">
+    <main>
+        <h2>Каталог товаров</h2>
+        <div class="cards">
+            <div class="card">
+                <img class="photo" alt="Керамическая плитка «Гранит»" src="data:image/svg+xml;utf8,
+<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'>
+  <rect width='400' height='300' fill='%23e8e2d8'/>
+  <g stroke='%23b9b0a0' stroke-width='4'>
+    <rect x='20' y='20' width='110' height='110' fill='%23cdbfa9'/>
+    <rect x='145' y='20' width='110' height='110' fill='%23d9cdb8'/>
+    <rect x='270' y='20' width='110' height='110' fill='%23c5b79f'/>
+    <rect x='20' y='145' width='110' height='110' fill='%23d9cdb8'/>
+    <rect x='145' y='145' width='110' height='110' fill='%23bfae94'/>
+    <rect x='270' y='145' width='110' height='110' fill='%23cdbfa9'/>
+  </g>
+  <text x='200' y='295' font-family='Arial' font-size='14' fill='%23555' text-anchor='middle'>Керамическая плитка «Гранит»</text>
+</svg>">
+                <div class="card-body">
+                    <h3>Керамическая плитка «Гранит»</h3>
+                    <p><strong>Описание:</strong> Облицовочная плитка для стен и пола.</p>
+                    <p><strong>Особенности:</strong> влагостойкая, морозоустойчивая.</p>
+                    <p><strong>Характеристики:</strong> 30×30 см, 1 упаковка = 1,44 м².</p>
+                </div>
+            </div>
+            <div class="card">
+                <img class="photo" alt="Ламинат «Дуб Натуральный»" src="data:image/svg+xml;utf8,
+<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'>
+  <rect width='400' height='300' fill='%23a9774b'/>
+  <g stroke='%236b4a2a' stroke-width='2'>
+    <rect x='20' y='20' width='360' height='50' fill='%23b98055'/>
+    <rect x='20' y='70' width='360' height='50' fill='%23a9774b'/>
+    <rect x='20' y='120' width='360' height='50' fill='%23c68a5c'/>
+    <rect x='20' y='170' width='360' height='50' fill='%23a9774b'/>
+    <rect x='20' y='220' width='360' height='50' fill='%23b98055'/>
+  </g>
+  <g stroke='%2380532f' stroke-width='1' opacity='.5'>
+    <line x1='80' y1='20' x2='80' y2='270'/>
+    <line x1='210' y1='20' x2='210' y2='270'/>
+    <line x1='330' y1='20' x2='330' y2='270'/>
+  </g>
+  <text x='200' y='295' font-family='Arial' font-size='14' fill='%23fff' text-anchor='middle'>Ламинат «Дуб Натуральный»</text>
+</svg>">
+                <div class="card-body">
+                    <h3>Ламинат «Дуб Натуральный»</h3>
+                    <p><strong>Описание:</strong> Напольное покрытие 32 класса износостойкости.</p>
+                    <p><strong>Особенности:</strong> влагостойкая пропитка, замковое соединение.</p>
+                    <p><strong>Характеристики:</strong> 1285×192 мм, толщина 8 мм.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img class="photo" alt="Краска интерьерная «Эко»" src="data:image/svg+xml;utf8,
+<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'>
+  <rect width='400' height='300' fill='%23f2f2f2'/>
+  <ellipse cx='200' cy='270' rx='120' ry='18' fill='%23d0d0d0'/>
+  <rect x='140' y='100' width='120' height='170' rx='10' fill='%23e74c3c'/>
+  <rect x='150' y='90' width='100' height='20' fill='%23c0392b'/>
+  <rect x='150' y='80' width='100' height='15' fill='%237f8c8d'/>
+  <text x='200' y='200' font-family='Arial' font-size='22' fill='%23fff' text-anchor='middle'>ЭКО</text>
+  <text x='200' y='295' font-family='Arial' font-size='14' fill='%23555' text-anchor='middle'>Краска интерьерная «Эко»</text>
+</svg>">
+                <div class="card-body">
+                    <h3>Краска интерьерная «Эко»</h3>
+                    <p><strong>Описание:</strong> Матовая краска на водной основе для стен и потолков.</p>
+                    <p><strong>Особенности:</strong> без запаха, экологична, быстро сохнет.</p>
+                    <p><strong>Характеристики:</strong> фасовка 5 л, расход 10 м²/л.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</section>
+
+<!-- ================= ПРАЙС-ЛИСТ ================= -->
+<section id="price" class="page">
+    <main>
+        <h2>Прайс-лист на продукцию</h2>
+        <p>Цены действительны с 01.09.2024.
+           <span style="background:#fdebd0; padding:2px 6px;">Жёлтый</span> — акция,
+           <span style="background:#d5f5e3; padding:2px 6px;">зелёный</span> — хит продаж,
+           <span style="background:#fadbd8; padding:2px 6px;">красный</span> — распродажа.</p>
+
+        <table>
+            <tr>
+                <th>Наименование</th>
+                <th>Ед. изм.</th>
+                <th>Цена, ₽</th>
+            </tr>
+            <tr>
+                <td>Плитка керамическая «Гранит»</td>
+                <td>упаковка</td>
+                <td class="price">890</td>
+            </tr>
+            <tr class="hit">
+                <td>Ламинат «Дуб Натуральный» 32 кл.</td>
+                <td>м²</td>
+                <td class="price">620</td>
+            </tr>
+            <tr class="promo">
+                <td>Краска интерьерная «Эко», 5 л</td>
+                <td>шт.</td>
+                <td class="price">1 450</td>
+            </tr>
+            <tr>
+                <td>Грунтовка глубокого проникновения, 10 л</td>
+                <td>шт.</td>
+                <td class="price">540</td>
+            </tr>
+            <tr class="sale">
+                <td>Штукатурка декоративная «Короед»</td>
+                <td>кг</td>
+                <td class="price">210</td>
+            </tr>
+            <tr class="hit">
+                <td>Плинтус потолочный, 2 м</td>
+                <td>шт.</td>
+                <td class="price">180</td>
+            </tr>
+        </table>
+    </main>
+</section>
+
+<!-- ================= КОНТАКТЫ ================= -->
+<section id="contacts" class="page">
+    <main>
+        <h2>Контакты и карта проезда</h2>
+        <div class="contact-grid">
+            <div>
+                <p><strong>Адрес:</strong> г. Москва, ул. Строителей, д. 15</p>
+                <p><strong>Телефон:</strong> +7 (495) 123-45-67</p>
+                <p><strong>E-mail:</strong> info@stroymaster.ru</p>
+                <p><strong>Режим работы:</strong> пн–сб, 9:00–20:00</p>
+
+                <h2 style="margin-top:25px;">Форма обратной связи</h2>
+                <form onsubmit="event.preventDefault(); alert('Спасибо! Сообщение отправлено.');">
+                    <input type="text" placeholder="Ваше имя" required>
+                    <input type="email" placeholder="E-mail" required>
+                    <textarea rows="4" placeholder="Сообщение" required></textarea>
+                    <button type="submit">Отправить</button>
+                </form>
+            </div>
+            <div>
+                <iframe
+                    src="https://yandex.ru/map-widget/v1/?ll=37.617635%2C55.755826&z=14"
+                    width="100%" height="400" frameborder="0"
+                    style="border-radius:8px;" allowfullscreen>
+                </iframe>
+                <p style="font-size:13px; color:#777; margin-top:8px;">
+                    Интерактивная карта: Яндекс.Карты (ул. Строителей, 15).
+                </p>
+            </div>
+        </div>
+    </main>
+</section>
+
+<!-- ================= ПОДВАЛ ================= -->
+<footer>
+    <div>
+        <a data-page="main">Главная</a>
+        <a data-page="about">О компании</a>
+        <a data-page="catalog">Каталог</a>
+        <a data-page="price">Прайс-лист</a>
+        <a data-page="contacts">Контакты</a>
+    </div>
+    <div>© 2024 СтройМастер. Все права защищены.</div>
+</footer>
+
+<script>
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('nav a').forEach(a => {
+            a.classList.toggle('active', a.dataset.page === id);
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    document.querySelectorAll('[data-page]').forEach(el => {
+        el.addEventListener('click', () => showPage(el.dataset.page));
+    });
+</script>
+
+</body>
+</html>
